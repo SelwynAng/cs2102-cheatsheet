@@ -1,0 +1,99 @@
+\documentclass[landscape]{article}
+\usepackage[a4paper,margin=3mm,landscape]{geometry}
+\usepackage[scaled=0.92]{helvet}
+\usepackage{multicol, multirow}
+\usepackage{makecell}
+\usepackage{array} 
+\usepackage[table]{xcolor}
+\usepackage{enumitem} 
+\usepackage{amssymb}
+\usepackage{graphicx}
+\setlist{nosep}
+
+\graphicspath{{./images/}}
+
+\pdfinfo{
+    /Title (CS2106 Cheatsheet.pdf)
+    /Creator (TeX)
+    /Producer (pdfTeX 1.40.0)
+    /Author (Selwyn Ang)
+    /Subject (CS2106)
+    /Keywords (CS2106, Cheatsheet, NUS, Introduction to Operating Systems) 
+}
+
+% Turn off header and footer
+\pagestyle{empty}
+
+
+\makeatletter
+\DeclareRobustCommand\smaller{\@setfontsize\smaller{6pt}{6.5pt}}
+\makeatother
+
+% redefine section commands to use less space
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+  {-0.1ex plus -0.1ex minus -0.1ex}%
+  {0.1ex plus .1ex minus 0.1ex}%
+{\normalfont\small\bfseries}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+  {-0.1ex plus -0.1ex minus -0.1ex}%
+  {0.1ex plus .1ex minus 0.1ex}%
+{\normalfont\scriptsize\bfseries}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+  {-0.1ex plus -0.1ex minus -0.1ex}%
+  {0.1ex plus .1ex minus 0.1ex}%
+{\normalfont\smaller\bfseries}}%
+\makeatother
+
+
+
+\renewcommand{\familydefault}{\sfdefault}
+\renewcommand\rmdefault{\sfdefault}
+%  makes nested numbering (e.g. 1.1.1, 1.1.2, etc)
+\renewcommand{\labelenumii}{\theenumii}
+\renewcommand{\theenumii}{\theenumi.\arabic{enumii}.}
+\renewcommand\labelitemii{•}
+\renewcommand\labelitemiii{•}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt plus 0.5ex}
+\setlength{\columnsep}{0.2cm}
+%% adjust spacing for all itemize/enumerate
+\setlength{\leftmargini}{0.5cm}
+\setlength{\leftmarginii}{0.5cm}
+\setlist[itemize,1]{leftmargin=2mm,labelindent=1mm,labelsep=1mm}
+\setlist[itemize,2]{leftmargin=2mm,labelindent=1mm,labelsep=1mm}
+\setlist[itemize,3]{leftmargin=2mm,labelindent=1mm,labelsep=1mm}
+\setlist[enumerate,1]{leftmargin=2mm,labelindent=1mm,labelsep=1mm}
+\setlist[enumerate,2]{leftmargin=2mm,labelindent=1mm,labelsep=1mm}
+\setlist[enumerate,3]{leftmargin=2mm,labelindent=1mm,labelsep=1mm}
+
+\input{./commands/style-helpers.tex}
+\input{./commands/code.tex}
+
+
+% --------------------------------------------------------
+
+\begin{document}
+\raggedright
+\tiny
+\begin{multicols*}{5}
+    \setlength{\columnseprule}{0.25pt}
+
+    \begin{tightcenter}
+        \fbox{%
+          \parbox{0.8\linewidth}{\centering \textcolor{black}{
+              {\Large\textbf{CS2102 Finals}}
+            \\ \normalsize{AY23/24 SEM 2}}
+            \\ {\footnotesize \textcolor{gray}{github/SelwynAng}}
+          }%
+        }
+    \end{tightcenter}
+    
+    \section{Relational Model}
+    \subsection{DBMS}
+    \begin{itemize}
+      \item \textbf{Transactions:}
+    \end{itemize}
+  \end{multicols*}
+\end{document}

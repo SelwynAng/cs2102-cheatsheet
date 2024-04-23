@@ -13,12 +13,12 @@
 \graphicspath{{./images/}}
 
 \pdfinfo{
-    /Title (CS2106 Cheatsheet.pdf)
+    /Title (CS2102 Cheatsheet.pdf)
     /Creator (TeX)
     /Producer (pdfTeX 1.40.0)
     /Author (Selwyn Ang)
-    /Subject (CS2106)
-    /Keywords (CS2106, Cheatsheet, NUS, Introduction to Operating Systems) 
+    /Subject (CS2102)
+    /Keywords (CS2102, Cheatsheet, NUS, Database Systems) 
 }
 
 % Turn off header and footer
@@ -76,7 +76,7 @@
 
 \begin{document}
 \raggedright
-\tiny
+\smaller
 \begin{multicols*}{5}
     \setlength{\columnseprule}{0.25pt}
 
@@ -93,7 +93,54 @@
     \section{Relational Model}
     \subsection{DBMS}
     \begin{itemize}
-      \item \textbf{Transactions:}
+      \item \textbf{Transactions:} Finite sequence of operations \& constitutes smallest logical unit of work from application perspective
+      \item \textbf{Properties of Transactions:}
+      \begin{enumerate}
+        \item \underline{Atomicity:} Either all effects of Transaction are reflected in database or none
+        \item \underline{Consistency:} Transaction guarantees to yield correct state of database
+        \item \underline{Isolation:} Transaction is isolated from effects of concurrent Transactions
+        \item \underline{Durability:} After commit of Transaction, effects are permanent
+      \end{enumerate}
+      \item \textbf{Equivalent Transaction}: 2 executions are equivalent if they have same effect on database
+      \item \textbf{Serialisability:} Concurrent execution of a set of transactions is serialisable if execution is equivalent to some serial execution of the same set of Transactions
+    \end{itemize}
+
+    \subsection{Relational Model}
+    \includegraphics[width=0.85\linewidth]{1_relational_model.png}
+    \begin{itemize}
+      \item \underline{Relational Schema:} Defines a relation, specifies attributes (columns), data constraints, name 
+      \begin{itemize}
+        \item $R(A_1, A_2, \dots A_3)$: relation schema with name $R$ and $n$ attributes $A_1, A_2, \dots, A_n$
+        \item Eg. \verb|Employees(id:INT, name:TEXT, dob:DATE)|
+      \end{itemize}
+      \item \underline{Domain:} Set of atomic values, including NULL
+      \begin{itemize}
+        \item $dom(A_i)$ = set of possible values for $A_i$
+        \item $\forall$ value $v$ of attribute $A_i$, $v \in \{dom(A_i \cup \{null\})\}$
+      \end{itemize}
+    \end{itemize}
+
+    \subsection{Keys}
+    \begin{itemize}
+      \item \textbf{Superkey:} Subset of attributes that UNIQUELY IDENTIFIES  a tuple in a relation
+      \item \textbf{Key:} Superkey that is also MINIMAL (No proper subset of key is a superkey)
+      \item \underline{Properties of Superkeys \& Keys:}
+      \begin{enumerate}
+        \item If (A,B,C) is DEFINITELY superkey $\rightarrow$ (A,B,C,D) is superkey
+        \item If (A,B,C) is DEFINITELY key $\rightarrow$ (A,B,C) is superkey
+        \item If (A,B) is DEFINITELY superkey $\rightarrow$ (A,B,C) is NOT a key
+        \item If (A,B) is DEFINITELY key $\rightarrow$ possible (B,C,D) is also key
+        \item Every relation has $\geq$ 1 superkey
+      \end{enumerate}
+      \item \textbf{Candidate Key:} Set of all keys of a given relation
+      \item \textbf{Primary Key:} A selected candidate key (attributes CANNOT be NULL, is underlined in schema notation)
+      \item \textbf{Foreign Key:} Subset of attributes of relation $R_1$ that refers to Primary Key of relation $R_2$
+      \begin{itemize}
+        \item $R_1$ is referencing relation, $R_2$ is referenced relation
+        \item $R.sid \rightarrow S.id$: $R.sid$ is a FK referencing PK $id$ in $S$
+        \item FK in $R_1$ must appear as PK in $R_2$ OR be NULL/tuple containing at least 1 NULL value
+        \item A referencing relation can be a referenced relation for different foreign key $\vert$ Referencing relation \& referenced relation can be same relation
+      \end{itemize}
     \end{itemize}
   \end{multicols*}
 \end{document}

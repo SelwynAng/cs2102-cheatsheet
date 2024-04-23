@@ -106,19 +106,22 @@
     \end{itemize}
 
     \subsection{Relational Model}
-    \includegraphics[width=0.85\linewidth]{1_relational_model.png}
-    \begin{itemize}
-      \item \underline{Relational Schema:} Defines a relation, specifies attributes (columns), data constraints, name 
+    \begin{multicols}{2}
+      \includegraphics[width=1.0\linewidth]{1_relational_model.png}
+      \columnbreak
       \begin{itemize}
-        \item $R(A_1, A_2, \dots A_3)$: relation schema with name $R$ and $n$ attributes $A_1, A_2, \dots, A_n$
-        \item Eg. \verb|Employees(id:INT, name:TEXT, dob:DATE)|
+        \item \underline{Relational Schema:} Defines a relation, specifies attributes (columns), data constraints, name 
+        \begin{itemize}
+          \item $R(A_1, A_2, \dots A_3)$: relation schema with name $R$ and $n$ attributes $A_1, A_2, \dots, A_n$
+          \item Eg. \verb|Employees(id:INT,| \verb|name:TEXT, dob:TEXT)|
+        \end{itemize}
+        \item \underline{Domain:} Set of atomic values, including NULL
+        \begin{itemize}
+          \item $dom(A_i)$ = set of possible values for $A_i$
+          \item $\forall$ value $v$ of attribute $A_i$, $v \in \{dom(A_i \cup \{null\})\}$
+        \end{itemize}
       \end{itemize}
-      \item \underline{Domain:} Set of atomic values, including NULL
-      \begin{itemize}
-        \item $dom(A_i)$ = set of possible values for $A_i$
-        \item $\forall$ value $v$ of attribute $A_i$, $v \in \{dom(A_i \cup \{null\})\}$
-      \end{itemize}
-    \end{itemize}
+    \end{multicols}
 
     \subsection{Keys}
     \begin{itemize}
@@ -142,5 +145,178 @@
         \item A referencing relation can be a referenced relation for different foreign key $\vert$ Referencing relation \& referenced relation can be same relation
       \end{itemize}
     \end{itemize}
+
+    \section{SQL}
+    \subsection{Three-valued Logic / Handing NULLs}
+    \begin{itemize}
+      \item \textbf{Logical Operations}
+      \includegraphics[width=1.0\linewidth]{2_three_valued_logic.png}
+      \begin{itemize}
+        \item \textbf{Implication:} $C_1 \rightarrow C_2$ == $(\sim C_1) \vee C_2$
+        \item $\sim NULL$ == $NULL$
+      \end{itemize}
+      \item \textbf{Relational Operations:} Any relational operations with $NULL$ produced $NULL$ values (Eg. $\leq$, $=$, $!=$)
+      \item \textbf{Arithmetic Operations:} Any arithmetic operations with $NULL$ produces $NULL$ values
+      \includegraphics[width=1.0\linewidth]{3_nulls.png}
+      \item \textbf{IS NULL vs = NULL (in WHERE clause):} IS NULL will select NULL values $\vert$ = NULL will not select any NULL values (NULL = NULL $\rightarrow$ NULL, nothing will be selected by Principle of Acceptance)
+      \item \textbf{DISTINCT keyword (in SELECT clause):} DISTINCT checks for distinct rows using IS DISTINCT FROM (Duplicate NULL values are removed)
+      \item \textbf{Empty \& NULL Semantics in Aggregate functions}
+      \includegraphics[width=1.0\linewidth]{4_empty_null_semantics.png}
+
+      \subsection{Integrity Constraints}
+      \begin{itemize}
+        \item \textbf{Principle of Rejection:} Integrity Constraints follow POR (Rejects insertion if condition evaluates to FALSE, Insertion is still done if condition is NULL) 
+      \end{itemize}
+      \begin{enumerate}
+        \item \underline{NOT NULL:} Rejects insertion if value at specified column is NULL (Condition: IS NOT NULL)
+        \item \underline{UNIQUE:} Rejects insertion if there are other rows where values are equal (Condition: $x.A_i <> y.A_i$) $\vert$ Can have multiple NULL values since NULL $<>$ NULL == NULL
+        \item \underline{Primary Key:} Equivalent to UNIQUE \& NOT NULL $\vert$ If one of the attributes is NULL, entire tuple is rejected
+        \item \underline{Foreign Key:} Rejects insertion if tuple does not exist in referenced relation AND is NOT NULL
+        \begin{itemize}
+          \item NO ACTION: Rejects delete/update if it violates constraints
+          \item CASCADE: Propagates delete/update to referencing tuples
+          \item SET DEFAULT: Updates FK of referencing tuples to default value
+          \item SET NULL: Updates FK of referencing tuples to NULL value
+        \end{itemize}
+        \item \underline{CHECK:} Rejects insertion if condition is FALSE
+      \end{enumerate}
+    \end{itemize}
+
+    \subsection{Deferrable Constraints}
+    \begin{itemize}
+      \item \textbf{Default Behaviour:} Constraints are checked immediately at end of SQL statement $\rightarrow$ Violation of 1 of the statements will cause whole transaction to roll black
+      \item \textbf{Benefit:} Allow cyclic FK constraints
+    \end{itemize}
+    \begin{enumerate}
+      \item \underline{NOT DEFERRABLE:} Constraint checks are not deferred at all
+      \item \underline{DEFERRABLE INITIALLY DEFERRED:} Constraint checks are deferred right at the start
+      \item \underline{DEFERRABLE INITIALLY IMMEDIATE:} Constraint checks are not deferred until DEFERRED keyword in transaction (Defer constraints on demand)
+    \end{enumerate}
+
+    \subsection{Set Operations}
+    \begin{itemize}
+      \item \textbf{Union Compatible:} 2 relations are union-compatible if (1): Both have same \# of attributes, (2): Corresponding attributes have same or compatible domains (Similar to function signatures where number, order \& type matters)
+      \item \textbf{Remove Duplicates:} \verb |UNION, INTERSECT, EXCEPT|
+      \item \textbf{Keep Duplicates:} \verb|UNION ALL, INTERSECT ALL, EXCEPT ALL| (Treats each element as distinct element)
+    \end{itemize}
+    
+    \subsection{Subqueries}
+    \begin{itemize}
+      \item Appears in \verb|SELECT, FROM, WHERE|
+      \item \textbf{IN/NOT IN}: Subquery must return exactly 1 column $\vert$ If expression matches any subquery row $\rightarrow$ IN returns TRUE, NOT IN returns FALSE $\vert$ If subquery evaluates to empty table $\rightarrow$ IN returns TRUE, NOT IN returns FALSE
+      \item \textbf{EXISTS/NOT EXISTS}: Subquery may return any \# of columns $\vert$ If expression matches any subquery row $\rightarrow$ EXISTS returns TRUE, NOT EXISTS returns FALSE $\vert$ If subquery evaluates to empty table, EXISTS returns FALSE, NOT EXISTS returns TRUE $\vert$ Only emptiness of subquery matters (Use \verb|SELECT 1|)
+      \item \textbf{ANY/ALL}: Subquery must return exactly 1 column $\vert$ ANY returns TRUE if comparison is true to $\geq$ 1 row, ALL returns TRUE if comparison is true to all rows  $\vert$ If subquery evaluates to empty table, ANY returns FALSE, ALL returns TRUE
+    \end{itemize}
+
+    \subsection{Conceptual Evaluation}
+    \begin{enumerate}
+      \item \textbf{FROM}: Compute cross product/JOINs of all Tables in FROM clause
+      \item \textbf{WHERE}: Keep tuples that evaluates to TRUE on the WHERE condition (WHERE follows Principle of Acceptance $\vert$ Cannot use aggregate directly in WHERE, but can have sub-query which contains aggregate in WHERE)
+      \item \textbf{GROUP BY}: Partition table into groups w.r.t grouping attributes (Application of aggregate functions are over each group $\rightarrow$ 1 result tuple per group)
+      \item \textbf{HAVING}: Keep groups that evaluates to TRUE on the HAVING condition (Conditions typically involve aggregates)
+      \item \textbf{SELECT}: Remove all attributes not specified in SELECT clause (Remove duplicates if DISTINCT)
+      \item \textbf{ORDER BY}: Sort tables based on specified attributes
+      \item \textbf{LIMIT/OFFSET}: Keep tuples based on their order in table
+    \end{enumerate}
+    \textbf{Restriction to SELECT/HAVING clauses upon GROUP BY}: If column $A_i$ of table R appears in SELECT/HAVING clause, $A_i$ must appear in GROUP BY clause OR $A_i$ appear as input of aggregate function in SELECT/HAVING clause OR PK of R appears in GROUP BY clause
+
+    \subsection{Special Functions}
+    \begin{enumerate}
+      \item \textbf{Patter Matching:} \_ matches any single character, \% matches any sequence of 0 or more characters (eg. \verb|WHERE pizza LIKE 'Ma%a'|)
+      \item \textbf{COALESCE}: Returns 1st non-NULL value in list of input arguments, returns NULL if all values in list are NULL
+      \item \textbf{NULLIF:} Returns NULL if $value_1$ = $value_2$, otherwise return $value_1$
+    \end{enumerate}
+
+    \subsection{Universality}
+    \begin{itemize}
+      \begin{multicols}{2}
+        \item \textbf{Double Negation Method:} $\forall x: Exist(x)$ == $\sim\exists x: \sim Exist(x)$
+        \item Eg. Restaurants that sells ALL pizzas liked by 'Homer' == There does not exist pizza that 'Homer' likes \& not sold by the restaurant
+        \columnbreak
+        \includegraphics[width=1.0\linewidth]{5_double_negation.png}
+      \end{multicols}
+      \item \textbf{Cardinality Method:} \\ $S \subseteq R$ $\rightarrow$ $\mid R \cup S \mid = \mid R \mid$, $\mid R \cap S \mid = \mid S \mid$ \\ $R \equiv S$ $\rightarrow$ $\mid R \cup S \mid = \mid R \cap S \mid$
+    \end{itemize}
+
+    \subsection{Recursive CTE}
+    \underline{Eg.} Find all MRT stations that can be reached from NS1 in at most 3 stops \\
+      \includegraphics[width=0.5\linewidth]{6_recursive_cte_eg.png}
+
+    \section{Entity Relationship Model}
+    \subsection{Entity Relationship}
+    \begin{itemize}
+      \item \textbf{Entities:} Nouns (Rectangles), \textbf{Relationships:} Verbs (Diamonds)
+      \item \textbf{Attributes:} Describe info about entities \& relationships
+      \begin{enumerate}
+        \item \underline{Key attribute:} Uniquely identifies each Entity
+        \item \underline{Composite attribute:} Composed of multiple other attributes
+        \item \underline{Multi-valued attributes:} 1 or more values for a given Entity
+        \item \underline{Derived attributes:} Derived from other attributes
+        \includegraphics[width=0.65\linewidth]{7_attribute_subtypes.png}
+      \end{enumerate}
+      \item \textbf{Degrees of Relationship Sets:} \# of entity sets (can be non-unique) involved in relationship set
+    \end{itemize}
+
+    \subsection{Relationship Constraints}
+    \includegraphics[width=1.0\linewidth]{8_summary_relationship_constraints.png}
+    \textbf{Weak Entity Set:} An entity set that does not have its own key (Has partial key that cannot uniquely identify an entity) $\rightarrow$ Needs help of key from \underline{Owning Entity Set} to uniquely identify an entity
+    
+    \subsection{Relational Mapping (ER to Schema)}
+    \textbf{Entity Set}
+    \begin{enumerate}
+      \item \underline{Name} of entity set $\rightarrow$ Name of table
+      \item \underline{Attribute} of entity set $\rightarrow$ Column of table
+      \item \underline{Key attribute} of entity set $\rightarrow$ PK of table
+      \item \underline{Derived attribute} of entity set $\rightarrow$ Should not appear in table
+      \item \underline{Composite attribute} of entity set $\rightarrow$ Converted into decomposed attributes in table
+      \item \underline{Multi-valued attribute} of entity set $\rightarrow$ Converted into seq. of single-valued attributes OR Create another table with FK constraint
+    \end{enumerate}
+    \textbf{Relationship Set}
+    \begin{enumerate}
+      \item \underline{Many-to-Many Relationship:} Relationship Set Schema should have its PK including PKs of both entities
+      \item \underline{Many-to-One Relationship:} 
+      \begin{itemize}
+        \item \textit{Separate Tables strategy:} Relationship Set Schema should have PK of One-Set as its PK to enforce upper bound of 1 \&  PK of Many-Set in Relationship Set should be NOT NULL to prevent redundant info
+        \item \textit{Combined Tables strategy:} Combine Relationship Set with One-Set, PK of merged set is PK of One-Set, PK of Many-Set in merged set can be NULL
+      \end{itemize}
+      \item \underline{One-to-One Relationship:}
+      \begin{itemize}
+        \item \textit{No Relationship Set strategy:} PK of each entity set is a UNIQUE FK in other set
+        \item \textit{3 Table strategy:} Relationship Set Schema has its PK as PK of 1 of the entity set, other entity set's PK appears in Relationship Set Schema as a UNIQUE, NOT NULL FK (candidate key)
+      \end{itemize}
+      \item \underline{Key + Total Relationship:} Combine Relationship Set with KeyTotal-Set, PK of merged set is PK of KeyTotal-Set, PK of Many-Set in Relationship Set must be NOT NULL
+      \item \underline{Weak Entity Set Relationship:} Combine Relationship Set with Weak Entity Set, PK of merged set is combination of Owning Entity Set's PK \& Weak Entity Set's PK, PK of Owning Entity Set appears as FK in merged set with ON DELETE/UPDATE CASCADE 
+    \end{enumerate}
+
+    \subsection{ISA Hierarchy}
+    \begin{itemize}
+      \item Subclass must be uniquely identified by same key attributes of superclass (subclass keys should not be shown in ER diagram)
+      \item Subclass may have additional attribute \& involved in additional relationship
+      \item \textbf{Schema Syntax:} Subclass has Superclass's PK as its PK \& FK (along with ON DELETE CASCADE)
+      \begin{multicols}{2}
+        \includegraphics[width=1.0\linewidth]{9_ISA.png}
+        \columnbreak
+        \begin{enumerate}
+          \item Overlap Constraint (Upper bound): Can a superclass belong to multiple subclasses? FALSE sets Upper bound = 1 (Key constraint)
+          \item Covering Constraint (Lower bound): Must a superclass belong to $\geq$ 1 subclass? TRUE sets Lower bound = 1 (Total Participation constraint)
+        \end{enumerate}
+      \end{multicols}
+    \end{itemize}
+
+    \subsection{Aggregation}
+    \begin{itemize}
+      \item Aggregate is a relationship set \& entity set
+      \item Key attributes are formed from relationship set
+    \end{itemize}
+    \includegraphics[width=0.55\linewidth]{10_aggregate_diagram.png}
+    \includegraphics[width=0.75\linewidth]{11_aggregate_schema.png}
+    \begin{multicols}{2}
+      \includegraphics[width=0.8\linewidth]{12_aggregate_example.png}
+      \begin{itemize}
+        \item Supplier can sell Part without being used by a Project
+        \item Aggregate's relationship set depicts necessary relationship btw. 2 entity sets
+        \item Aggregate's entity set depicts optional relationship
+      \end{itemize}
+    \end{multicols}
   \end{multicols*}
 \end{document}

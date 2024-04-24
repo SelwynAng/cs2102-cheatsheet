@@ -8,6 +8,7 @@
 \usepackage{enumitem} 
 \usepackage{amssymb}
 \usepackage{graphicx}
+\setlength{\multicolsep}{6.0pt plus 2.0pt minus 1.5pt}
 \setlist{nosep}
 
 \graphicspath{{./images/}}
@@ -109,19 +110,17 @@
     \begin{multicols}{2}
       \includegraphics[width=1.0\linewidth]{1_relational_model.png}
       \columnbreak
-      \begin{itemize}
-        \item \underline{Relational Schema:} Defines a relation, specifies attributes (columns), data constraints, name 
+        \\ \underline{Relational Schema:} Defines a relation, specifies attributes (columns), data constraints, name 
         \begin{itemize}
           \item $R(A_1, A_2, \dots A_3)$: relation schema with name $R$ and $n$ attributes $A_1, A_2, \dots, A_n$
           \item Eg. \verb|Employees(id:INT,| \verb|name:TEXT, dob:TEXT)|
         \end{itemize}
-        \item \underline{Domain:} Set of atomic values, including NULL
-        \begin{itemize}
-          \item $dom(A_i)$ = set of possible values for $A_i$
-          \item $\forall$ value $v$ of attribute $A_i$, $v \in \{dom(A_i \cup \{null\})\}$
-        \end{itemize}
-      \end{itemize}
     \end{multicols}
+    \underline{Domain:} Set of atomic values, including NULL
+    \begin{itemize}
+      \item $dom(A_i)$ = set of possible values for $A_i$
+      \item $\forall$ value $v$ of attribute $A_i$, $v \in \{dom(A_i \cup \{null\})\}$
+    \end{itemize}
 
     \subsection{Keys}
     \begin{itemize}
@@ -240,7 +239,7 @@
 
     \subsection{Recursive CTE}
     \underline{Eg.} Find all MRT stations that can be reached from NS1 in at most 3 stops \\
-      \includegraphics[width=0.5\linewidth]{6_recursive_cte_eg.png}
+      \includegraphics[width=0.45\linewidth]{6_recursive_cte_eg.png}
 
     \section{Entity Relationship Model}
     \subsection{Entity Relationship}
@@ -252,7 +251,7 @@
         \item \underline{Composite attribute:} Composed of multiple other attributes
         \item \underline{Multi-valued attributes:} 1 or more values for a given Entity
         \item \underline{Derived attributes:} Derived from other attributes
-        \includegraphics[width=0.65\linewidth]{7_attribute_subtypes.png}
+        \includegraphics[width=0.55\linewidth]{7_attribute_subtypes.png}
       \end{enumerate}
       \item \textbf{Degrees of Relationship Sets:} \# of entity sets (can be non-unique) involved in relationship set
     \end{itemize}
@@ -287,6 +286,7 @@
       \item \underline{Key + Total Relationship:} Combine Relationship Set with KeyTotal-Set, PK of merged set is PK of KeyTotal-Set, PK of Many-Set in Relationship Set must be NOT NULL
       \item \underline{Weak Entity Set Relationship:} Combine Relationship Set with Weak Entity Set, PK of merged set is combination of Owning Entity Set's PK \& Weak Entity Set's PK, PK of Owning Entity Set appears as FK in merged set with ON DELETE/UPDATE CASCADE 
     \end{enumerate}
+    \textbf{NOTE:} Total Participation Constraint in ER model cannot be enforced by schema
 
     \subsection{ISA Hierarchy}
     \begin{itemize}
@@ -294,7 +294,8 @@
       \item Subclass may have additional attribute \& involved in additional relationship
       \item \textbf{Schema Syntax:} Subclass has Superclass's PK as its PK \& FK (along with ON DELETE CASCADE)
       \begin{multicols}{2}
-        \includegraphics[width=1.0\linewidth]{9_ISA.png}
+        \noindent
+        \includegraphics[width=0.9\linewidth]{9_ISA.png}
         \columnbreak
         \begin{enumerate}
           \item Overlap Constraint (Upper bound): Can a superclass belong to multiple subclasses? FALSE sets Upper bound = 1 (Key constraint)

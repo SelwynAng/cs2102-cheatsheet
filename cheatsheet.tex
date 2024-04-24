@@ -8,6 +8,8 @@
 \usepackage{enumitem} 
 \usepackage{amssymb}
 \usepackage{graphicx}
+\usepackage{newlfont}
+\usepackage{stix}
 \setlength{\multicolsep}{6.0pt plus 2.0pt minus 1.5pt}
 \setlist{nosep}
 
@@ -319,5 +321,80 @@
         \item Aggregate's entity set depicts optional relationship
       \end{itemize}
     \end{multicols}
+
+    \section{Relational Algebra}
+    \subsection{Algebra}
+    \textbf{Closure:} A set of values is closed under the set of operators if any combination of the operators produces only values in the given set (Relations are closed under Relational Algebra)
+    
+    \subsection{Unary Operators}
+    \textbf{Selection Operator ($\sigma$)}
+    \begin{itemize}
+      \item $\sigma_{[c]}(R)$ : Selects all tuples from relation $R$ (ROWS) that satisfies the selection condition $c$ based on Principle of Acceptance
+      \item $c$ is a condition that returns a boolean (potentially NULL), $c$ must specify only attributes in $R$
+      \item \underline{Precedence:} $(), op, \neg , \wedge , \vee$
+      \item Can be mapped to \verb|WHERE| clause of SQL
+      \item \underline{Properties:} Result have same schema as input relation $\vert$ \# of rows are often smaller
+    \end{itemize}
+    \textbf{Projection Operator ($\pi$)}
+    \begin{itemize}
+      \item $\pi_{[l]}(R)$ : Keeps only columns specified in ordered list $l$ and in same order 
+      \item $l$ must specify only attributes in $R$, No operations \& duplicates in projection operator (eg. $\pi_{[A_1 + A_2]}(R)$, $\pi_{[A_1, A_1]}(R)$)
+      \item $\pi_{[A_1, A_2]}(R) \neq \pi_{[A_2, A_1]}(R)$ (Order matters!!)
+      \item Can be mapped to \verb|SELECT| clause in SQL
+      \item \underline{Properties:} Resulting schema is as specified by $l$ without relation name $\vert$ \# of rows may be smaller (Relation is defined as set of tuples $\rightarrow$ Duplicate rows will be removed)
+    \end{itemize}
+    \textbf{Renaming Operator ($\rho$)}
+    \begin{itemize}
+      \item $\rho_{[r]}(R)$ : Renames all attributes mentioned in $r$ s.t. for each renaming $B_i \leftarrow A_i$, $A_i$ is renamed to $B_i$
+      \item Can be mapped to \verb|AS| keyword in \verb|SELECT| in SQL
+      \item \underline{Properties:} Resulting schema is old schema renamed by $r$ $\vert$ Order of column is unchanged (except for renaming) $\vert$ \# of rows remains the same
+    \end{itemize}
+
+    \subsection{Binary Operators}
+    \textbf{SET Operators}
+    \begin{itemize}
+      \item $R \cap S$, $R \cup S$, $R - S$ (Relations must be union-compatible)
+    \end{itemize}
+    \textbf{PRODUCT Operators}
+    \begin{itemize}
+      \item $R \times S$ : Cross product of 2 relations is a relation formed by combining all pairs of tuples from 2 input relations
+      \item Can be mapped to \verb|FROM| keyword in SQL
+      \item \underline{Optimisation:} Cross product can be optimised by \verb|JOIN| operators, which combines cross product, selection \& projection (Avoids generating all $\vert R \times S \vert$ intermediate tuples)
+    \end{itemize}
+    \textbf{INNER JOIN Operators}
+    \begin{enumerate}
+      \item \textbf{$\theta$ Join:} $R \Join_{[\theta]}S$ = $\sigma_{[\theta]}(R \times S)$ (Cross product followed by selection)
+      \item \textbf{Equi Join}: $R \Join_{[=]}S$ = Special $\theta$ Join where the only relational operator used is equality (All equi join is a $\theta$ join but not all $\theta$ join are equi join)
+      \item \textbf{Natural Join:} $R \Join S$ = $\pi_{[l]} (\sigma_{[\theta]}(R \times S))$
+      \begin{itemize}
+        \item $l$ = $(Attr(R) \cap Attr(S)) + (Attr(R) - Attr(S)) + (Attr(S) - Attr(R))$ (Order matters, where common attributes are listed, then R's attributes, followed by S's attributes)
+        \item $\theta$ = $\forall \in (Attr(R) \cap Attr(S)): R.A_i = S.A_i$ (All common attributes are equal)
+      \end{itemize}
+    \end{enumerate}
+    \textbf{OUTER JOIN Operators}
+    \begin{enumerate}
+      \item \textbf{Semi Join:} $R \ltimes_{[\theta]}S$ = $\pi_{[Attr(R)]}(R \Join_{[\theta]}S)$ (Used to find non-dangling tuple)
+      \\ NOTE: Semi Join projects R's attributes only, while normal Joins will project R and S's attributes
+      \item \textbf{Dangles:} $dangle(R \Join_{[\theta]}S)$ = $R - R \ltimes_{[\theta]}S$
+      \item \textbf{Left Outer Join:} $R_1 \leftouterjoin_{[c]}R_2$ = Inner Join $\cup$ Left Dangling Tuple = $R_1 \Join_{[c]} R_2 \cup (dangle(R_1 \Join_{[\theta]}R_2) \times (null(R_2))$
+      \item \textbf{Right Outer Join:} $R_1 \rightouterjoin_{[c]}R_2$ = Inner Join $\cup$ Right Dangling Tuple = $R_1 \Join_{[c]} R_2 \cup ((null(R_1) \times dangle(R_2 \Join_{[\theta]}R_1))$
+      \item \textbf{Full Outer Join:} $R_1 \fullouterjoin_{[c]}R_2$ = Inner Join $\cup$ Left Dangling Tuple $\cup$ Right Dangling Tuple = $R_1 \Join_{[c]} R_2 \cup (dangle(R_1 \Join_{[\theta]}R_2) \times (null(R_2)) \cup ((null(R_1) \times dangle(R_2 \Join_{[\theta]}R_1))$
+    \end{enumerate}
+
+    \subsection{Complex Expressions}
+    \textbf{Equivalence VS Isomorphic}
+    \begin{itemize}
+      \item \underline{Equivalence ($\equiv$):} 2 relational algebra expressions are equivalent if both produces same result with same column order, possibly different row order
+      \item \underline{Isomorphic ($\cong$):} 2 relational algebra expressions are isomorphic if both produces same result with possibly different column order, possibly different row order
+    \end{itemize}
+    \textbf{Special Properties}
+    \begin{enumerate}
+      \item $\sigma_{[\theta_1]}(\sigma_{[\theta_2]}(R)) \equiv \sigma_{[\theta_2]}(\sigma_{[\theta_1]}(R)) \equiv \sigma_{[\theta_1 \wedge \theta_2]}(R)$
+      \item $\pi_{[l_1]}(\pi_{[l_2]}(R)) \nequiv \pi_{l_1}(R)$ unless $l_1 \subseteq l_2$
+      \item $R \times S \cong S \times R$, $R \Join S \cong S \Join R$, $R \Join (S \Join T) \cong (R \Join S) \Join T$ (Different column order)
+      \item $R \times (S \times T) \equiv (R \times S) \times T$ (Associative)
+      \item $\pi_{[l]}(\sigma_{[\theta]}(R)) \nequiv \sigma_{[\theta]}(\pi_{[l]}(R))$ (Unless $\theta$ uses only attributes in $l$)
+      \item $\sigma_{[\theta]}(R \times S) \nequiv \sigma_{[\theta]}(R) \times S$ (Unless $\theta$ uses only Attr($R$))
+    \end{enumerate}
   \end{multicols*}
 \end{document}

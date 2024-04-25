@@ -396,5 +396,58 @@
       \item $\pi_{[l]}(\sigma_{[\theta]}(R)) \nequiv \sigma_{[\theta]}(\pi_{[l]}(R))$ (Unless $\theta$ uses only attributes in $l$)
       \item $\sigma_{[\theta]}(R \times S) \nequiv \sigma_{[\theta]}(R) \times S$ (Unless $\theta$ uses only Attr($R$))
     \end{enumerate}
+
+    \section{Functions \& Procedures}
+    \subsection{Functions}
+    \begin{itemize}
+      \item Returns some values/tuples
+      \item \textbf{Returns output of an atomic data type:}
+      \includegraphics[width=0.55\linewidth]{13_func_atomic.png} \\
+      \underline{Example Query:} \verb|SELECT Name, convert(Mark) FROM Scores;|
+      \item \textbf{Returns 1 EXISTING tuple:}
+      \includegraphics[width=0.55\linewidth]{14_func_existing.png} \\
+      \underline{Example Query:} \verb|SELECT topStudent();|
+      \item \textbf{Returns EXISTING SET of tuples:}
+      \includegraphics[width=0.55\linewidth]{15_func_existing_set.png} \\
+      \underline{Example Query:} \verb|SELECT * FROM topStudents();|
+      \item \textbf{Returns 1 NEW tuple (Note parameters):} \\
+      \includegraphics[width=0.65\linewidth]{16_func_new.png} \\
+      \underline{Example Query:} \verb|SELECT topMarkCnt();|
+      \item \textbf{Returns NEW SET of tuples (Note parameters):}
+      \includegraphics[width=0.55\linewidth]{17_func_new_set.png} \\
+      \includegraphics[width=0.55\linewidth]{18_func_new_table.png} \\
+      \underline{Example Query:} \verb|SELECT MarkCnt();|
+    \end{itemize}
+
+    \subsection{Procedures}
+    \begin{itemize}
+      \item Do not return value/tuple
+      \item \underline{Syntax}: \verb|CREATE OR REPLACE PROCEDURE...|
+    \end{itemize}
+    \subsection{Control Structures:}
+    \begin{enumerate}
+      \item \verb|IF ... THEN ... ELSE ... END IF|
+      \item \verb|LOOP ... END LOOP|
+      \item \verb|EXIT ... WHEN ...|
+      \item \verb|WHILE ... LOOP ... END LOOP|
+      \item \verb|FOR ... IN ... LOOP ... END LOOP|
+    \end{enumerate}
+
+    \subsection{Variables:}
+    \begin{itemize}
+      \item Variables are declared in \verb|DECLARE| section, Actual function is in \verb|BEGIN ... END| section
+      \item Values are selected into variables (\verb|SELECT COUNT(*) INTO| \verb|overlap_count|) OR assigned directly (\verb|temp_val := val1|)
+    \end{itemize}
+
+    \subsection{Cursor:}
+    \begin{itemize}
+      \item Cursor enables us to access each individual row selected by a \verb|SELECT| statement (DECLARE $\rightarrow$ OPEN $\rightarrow$ FETCH $\rightarrow$ CLOSE)
+      \includegraphics[width=0.7\linewidth]{19_cursor.png}
+      \item \verb|OPEN|: SQL statement for cursor is executed \& cursor points to beginning of result
+      \item \verb|FETCH|: Next tuple from cursor is read \& put into \verb|r| $\rightarrow$ No tuple, terminate loop
+      \item \verb|RETURN NEXT|: Inserts a tuple to output of function
+      \item \verb|CLOSE|: Releases resources allocated to cursor
+      \item \underline{Cursor Movement:} \verb|FETCH PRIOR FROM cur INTO r|, \verb|FETCH| \verb|FIRST FROM cur INTO r|, \verb|FETCH LAST FROM cur INTO r|, \verb|FETCH ABSOLUTE x FROM cur INTO r| (fetch x\textsuperscript{th} tuple)
+    \end{itemize}
   \end{multicols*}
 \end{document}

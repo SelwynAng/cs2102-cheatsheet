@@ -641,6 +641,7 @@
         \item No update or deletion or insertion anomalies
         \item Small redundancy
         \item Original table can always be reconstructed from decomposed tables
+        \item Dependencies may not be preserved in decomposed table
       \end{enumerate}
     \end{itemize}
 
@@ -666,6 +667,69 @@
       \item \underline{WORKING}: For LJD with multiple decomposed schema, working only requires 1 possible decomposition \& show the working that each step is a LJD $\vert$ For non-LJD, working requires exploration of all possibilities \& explain why each possibility is non-LJD 
       \item BCNF guarantees lossless join
     \end{itemize}
+    \end{itemize}
+
+    \section{3NF}
+    \subsection{Dependency Preservation}
+    \begin{itemize}
+      \item Let $S$ be given set of FDs on original table, $S'$ be set of FDs on decomposed table
+      \item Decomposition preserves all FDs $\leftrightarrow$ $S$ \& $S'$ are equivalent (Every FD in $S'$ can be derived from $S$, Every FD in $S$ can be derived from $S'$)
+    \end{itemize}
+
+    \subsection{3rd Normal Form}
+    \begin{itemize}
+      \item \textbf{Definition:} A table satisfies 3NF $\leftrightarrow$ For every non-trivial \& decomposed FD either (1) LHS is a superkey or (2) RHS is a prime attribute (appears in a key)
+      \item \textbf{Properties of 3NF:}
+      \begin{enumerate}
+        \item Not as strict as BCNF
+        \item Small redundancy (not as small as BCNF)
+        \item Lossless join property
+        \item Preserves all FDs
+      \end{enumerate}
+      \item \textbf{BCNF VS 3NF:} Satisfying BCNF $\rightarrow$ Satisfying 3NF (but not necessarily vice versa) $\vert$ Violating 3NF $\rightarrow$ Violating BCNF (but not necessarily vice versa)
+      \item \textbf{Algorithm to check 3NF:}
+      \begin{enumerate}
+        \item Derive keys of $R$ (via Algorithm to find keys)
+        \item For each given FD, check if LHS is a superkey OR Each attribute on RHS is a prime attribute
+        \item If all given FDs satisfy this condition $\rightarrow$ R is in 3NF
+      \end{enumerate}
+    \end{itemize}
+
+    \subsection{3NF Decomposition}
+    A table is NOT in 3NF $\rightarrow$ Decompose it into smaller tables that are in 3NF
+    \begin{itemize}
+      \item \textbf{BCNF Decomposition VS 3NF Decomposition:} BCNF Decomposition may perform $\geq$ 1 binary splits, each of which divides a table into 2 $\vert$ 3NF decomposition has only 1 split, which divides table into $\geq$ 2 parts
+      \item \textbf{3NF Decomposition Algorithm:}
+      \begin{enumerate}
+        \item Given a table $R$ and a set $S$ of FDs, derive \underline{minimal basis} of S
+        \item In minimal basis, combine FDs whose LHSs are the same (Basically get non-decomposed FDs aka. Canonical minimal basis)
+        \item Create a table for each FD remained
+        \item If none of the tables contains a key of original table $R$, create a table that contains any key of $R$ (Ensure lossless join decomposition)
+        \item Remove subsumed tables (Remove table if all of its attributes are contained in another table)
+      \end{enumerate}
+    \end{itemize}
+
+    \subsection{Minimal Basis}
+    \begin{itemize}
+      \item Minimal Basis of $S$ is a simplified version of S
+      \item \textbf{Conditions:}
+      \begin{enumerate}
+        \item Every FD in minimal basis can be derived from $S$, and vice versa
+        \item Every FD in minimal basis is a non-trivial \& decomposed FD
+        \item No FD in minimal basis is redundant (No FD in minimal basis can be derived from other Fds in minimal basis)
+        \item For each FD in minimal basis, none of attributes on LHS is redundant (If we remove an attribute from LHS, then resulting FD is a new FD that cannot be derived from original set of FDs)
+      \end{enumerate}
+      \item \textbf{Algorithm to find Minimal Basis}
+      \begin{enumerate}
+        \item Transform FDs, so that each RHS contains only 1 attribute (Decompose FDs)
+        \item Remove redundant attributes on LHS of each FD
+        \begin{enumerate}[label=\alph*]
+          \item Given $AB \rightarrow C$, remove $A$ to produce $B \rightarrow C$
+          \item Check whether $B \rightarrow C$ is implied by $S$ (Check if closure of $B$ contains $C$)
+          \item If $B \rightarrow C$ is not implied, $A$ is NOT redundant, If $B \rightarrow C$ is implied, $A$ is redundant
+        \end{enumerate}
+        \item Remove redundant FDs (Remove FD from $S$ \& see if that FD can be derived from other FDs in $S$)
+      \end{enumerate}
     \end{itemize}
   \end{multicols*}
 \end{document}

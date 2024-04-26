@@ -605,5 +605,67 @@
       \item Identify all keys from superkeys
       \\ \underline{Tricks:} (1): Check all small attribute sets first (If closure of the set contains all attributes, no need to check superset already) $\vert$ (2): If an attribute does not appear on RHS of any FD, then it must be in every key
     \end{enumerate}
+
+    \section{BCNF}
+    \subsection{Non-trivial \& Decomposed FD}
+    \begin{itemize}
+      \item \textbf{Decomposed FD:} An FD whose RHS has only 1 attribute (A non-decomposed FD can always be transformed into a set of decomposed FDs via Rule of Decomposition)
+      \item \textbf{Non-trivial \& Decomposed FD} A decomposed FD whose RHS does not appear in LHS
+      \item \textbf{Algorithm for finding Non-trivial \& decomposed FDs (via Closures)}: Consider $R(A,B,C)$
+      \begin{enumerate}
+        \item Consider all attribute subsets in $R$
+        \item Compute closure of each subset
+        \item From each closure, remove trivial attributes (remove attributes from closure that appear in original subset)
+        \item Derive non-trivial \& decomposed FDs from each closure (use Rule of Decomposition if needed)
+      \end{enumerate}
+    \end{itemize}
+
+    \subsection{BCNF}
+    \begin{itemize}
+      \item \textbf{Definition:} Table $R$ is in BCNF if every non-trivial \& decomposed FD has a superkey in its LHS
+      \item \textbf{Algorithm to check BCNF:}
+      \begin{enumerate}
+        \item Compute closure of each attribute subset
+        \item Derive keys of $R$ (using closure)
+        \item Derive all non-trivial \& decomposed FDs on $R$ (using closure)
+        \item Check if all non-trivial \& decomposed FDs' LHS is a superkey $\rightarrow$ if all non-trivial \& decomposed FDs satisfy requirement, R is in BCNF
+      \end{enumerate}
+      \item \textbf{Simplified Algorithm to check BCNF:}
+      \begin{enumerate}
+        \item Compute closure of each attribute subset
+        \item Check if there is a closure such that it satisfies "more than but not all" condition
+        \item If such a closure exists $\rightarrow$ R is NOT in BCNF
+      \end{enumerate}
+      \item \textbf{Properties of BCNF:}
+      \begin{enumerate}
+        \item No update or deletion or insertion anomalies
+        \item Small redundancy
+        \item Original table can always be reconstructed from decomposed tables
+      \end{enumerate}
+    \end{itemize}
+
+    \subsection{BCNF Decomposition}
+    If table is not in BCNF $\rightarrow$ Decompose table into smaller tables (Normalisation)
+    \begin{itemize}
+      \item \textbf{Decomposition Algorithm:}
+      \begin{enumerate}
+        \item Find a subset $X$ of attributes in $R$ such that its closure satisfies "more but not all" condition
+        \item Decompose $R$ into 2 tables $R_1, R_2$ such that $R_1$ contains all attributes in $\{X\}^{+}$ \& $R_2$ contains all attributes in $X$ as well as attributes not in $\{X\}^{+}$
+        \item If $R_1$ is not in BCNF $\rightarrow$ decompose $R_1$, If $R_2$ is not in BCNF $\rightarrow$ decompose $R_2$ 
+      \end{enumerate}
+    NOTE: BCNF decomposition of a table may not be unique $\vert$ Table only has 2 attributes $\rightarrow$ Table MUST be in BCNF
+    \item \textbf{Projection of Closures/FDs:} Used when we want to derive closures on a table $R_i$ that is decomposed from a table $R \rightarrow$ Can decide whether $R_i$ is in BCNF \& whether to decompose $R_i$
+    \begin{enumerate}
+      \item Enumerate attribute subsets of $R_i$
+      \item For each subset, derive its closure on $R$ (basically use FDs from $R$)
+      \item Project each closure onto $R_i$ by removing those attributes that do not appear in $R_i$
+    \end{enumerate}
+    \item \textbf{Lossless Join Decomposition}
+    \begin{itemize}
+      \item Decomposition guarantees lossless join whenever common attributes in $R_1$ \& $R_2$ is a superkey of  $R_1$ or $R_2$
+      \item \underline{WORKING}: For LJD with multiple decomposed schema, working only requires 1 possible decomposition \& show the working that each step is a LJD $\vert$ For non-LJD, working requires exploration of all possibilities \& explain why each possibility is non-LJD 
+      \item BCNF guarantees lossless join
+    \end{itemize}
+    \end{itemize}
   \end{multicols*}
 \end{document}

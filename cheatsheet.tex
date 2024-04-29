@@ -421,7 +421,7 @@
 
     \subsection{Procedures}
     \begin{itemize}
-      \item Do not return value/tuple
+      \item Do not return value/tuple, treated as a transaction
       \item \underline{Syntax}: \verb|CREATE OR REPLACE PROCEDURE...|
     \end{itemize}
     \subsection{Control Structures:}
@@ -610,6 +610,8 @@
     \subsection{Non-trivial \& Decomposed FD}
     \begin{itemize}
       \item \textbf{Decomposed FD:} An FD whose RHS has only 1 attribute (A non-decomposed FD can always be transformed into a set of decomposed FDs via Rule of Decomposition)
+      \item \textbf{Types of FDs:}
+      \includegraphics[width=0.9\linewidth]{27_fd.png}
       \item \textbf{Non-trivial \& Decomposed FD} A decomposed FD whose RHS does not appear in LHS
       \item \textbf{Algorithm for finding Non-trivial \& decomposed FDs (via Closures)}: Consider $R(A,B,C)$
       \begin{enumerate}
@@ -730,6 +732,13 @@
         \end{enumerate}
         \item Remove redundant FDs (Remove FD from $S$ \& see if that FD can be derived from other FDs in $S$)
       \end{enumerate}
+    \end{itemize}
+
+    \subsection{Primary Keys \& FDs}
+    \includegraphics[width=0.8\linewidth]{28_fd_diagram.jpg}
+    \begin{itemize}
+      \item \textbf{Candidate Keys:} A, CD for E1 $\vert$ G for E2
+      \item \textbf{Functional Dependencies:} A $\rightarrow$ CD, CD $\rightarrow$ A, A $\rightarrow$ B, CD $\rightarrow$ B, A $\rightarrow$ F, CD $\rightarrow$ F, A $\rightarrow$ G, CD $\rightarrow$ G, G $\rightarrow$ HJK 
     \end{itemize}
   \end{multicols*}
 \end{document}

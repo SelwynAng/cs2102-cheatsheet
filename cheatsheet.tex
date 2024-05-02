@@ -204,7 +204,7 @@
     \subsection{Subqueries}
     \begin{itemize}
       \item Appears in \verb|SELECT, FROM, WHERE|
-      \item \textbf{IN/NOT IN}: Subquery must return exactly 1 column $\vert$ If expression matches any subquery row $\rightarrow$ IN returns TRUE, NOT IN returns FALSE $\vert$ If subquery evaluates to empty table $\rightarrow$ IN returns TRUE, NOT IN returns FALSE
+      \item \textbf{IN/NOT IN}: Subquery must return exactly 1 column $\vert$ If expression matches any subquery row $\rightarrow$ IN returns TRUE, NOT IN returns FALSE $\vert$ If subquery evaluates to empty table $\rightarrow$ IN returns FALSE, NOT IN returns TRUE
       \item \textbf{EXISTS/NOT EXISTS}: Subquery may return any \# of columns $\vert$ If expression matches any subquery row $\rightarrow$ EXISTS returns TRUE, NOT EXISTS returns FALSE $\vert$ If subquery evaluates to empty table, EXISTS returns FALSE, NOT EXISTS returns TRUE $\vert$ Only emptiness of subquery matters (Use \verb|SELECT 1|)
       \item \textbf{ANY/ALL}: Subquery must return exactly 1 column $\vert$ ANY returns TRUE if comparison is true to $\geq$ 1 row, ALL returns TRUE if comparison is true to all rows  $\vert$ If subquery evaluates to empty table, ANY returns FALSE, ALL returns TRUE
     \end{itemize}
